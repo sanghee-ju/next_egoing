@@ -1,6 +1,7 @@
 // csr로 사용할 경우 아래 코드 최상단에 작성
 // "use client";
 // import { useEffect, useState } from "react";
+import { Control } from "./Control";
 import "./globals.css";
 import Link from "next/link";
 
@@ -25,11 +26,13 @@ export default async function RootLayout({ children }) {
   //     });
   // }, []);
   // 위 fetch 동기적으로 변환 -> 글 목록 동적으로 생성
-  const resp = await fetch("http://localhost:9999/topics");
+  const resp = await fetch(process.env.NEXT_PUBLIC_API_URL + "topics", {
+    cache: "no-store",
+  });
   const topics = await resp.json();
   return (
     <html>
-      <body>
+      <body suppressHydrationWarning={true}>
         <h1>
           <Link href="/">WEB</Link>
         </h1>
@@ -43,17 +46,7 @@ export default async function RootLayout({ children }) {
           })}
         </ol>
         {children}
-        <ul>
-          <li>
-            <Link href="/create">Create</Link>
-          </li>
-          <li>
-            <Link href="/update/1">Update</Link>
-          </li>
-          <li>
-            <input type="button" value="delete" />
-          </li>
-        </ul>
+        <Control />
       </body>
     </html>
   );
